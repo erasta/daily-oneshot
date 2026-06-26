@@ -1,7 +1,5 @@
 # Daily Maze
 
-**Date:** 2026-06-26
-
 A fresh 15×15 maze generated deterministically from today's date — solve it with
 arrow keys, WASD, or swipe, racing a timer to reach the gold square.
 
@@ -12,8 +10,9 @@ finished run.
 
 ## How to run
 
+From this app's folder:
+
 ```bash
-cd apps/2026-06-26-daily-maze
 npm install
 npm run dev      # local dev server
 npm run build    # production bundle in dist/

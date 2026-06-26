@@ -3,7 +3,6 @@ import {
   canMove,
   generateMaze,
   seedFromDate,
-  todayString,
   type Maze,
 } from './maze'
 
@@ -42,7 +41,9 @@ function formatTime(ms: number): string {
 }
 
 export default function App() {
-  const date = useMemo(() => todayString(new Date()), [])
+  // The date lives only in the folder name (.../YYYY-MM-DD-slug/); read it
+  // back from the URL so nothing here hardcodes a date.
+  const date = location.pathname.match(/\d{4}-\d{2}-\d{2}/)?.[0] ?? ''
   const maze: Maze = useMemo(
     () => generateMaze(GRID, GRID, seedFromDate(date)),
     [date],

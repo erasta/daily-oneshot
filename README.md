@@ -1,6 +1,6 @@
 # Daily Oneshot
 
-A new small React app, built and shipped each day.
+A new small React app, built and shipped each day by an LLM.
 
 ## Daily flow
 1. Run `/clear` first for a fresh context, then paste this to Claude:

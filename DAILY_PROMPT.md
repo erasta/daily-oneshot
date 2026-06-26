@@ -19,6 +19,13 @@ Build and ship a small web app today. Rules:
      single session. Favor self-contained apps with no backend: if it
      needs "daily"/changing content, derive it deterministically from the
      date so no server is required.
+   - When an app's content depends on "today's date", the date must live
+     ONLY in the app's folder name. Don't hardcode a date literal anywhere
+     (no `const date = '2026-06-26'`) and don't read the system clock (no
+     `new Date()`). Instead derive the date at runtime from the folder name
+     in the URL path, e.g.
+     `location.pathname.match(/\d{4}-\d{2}-\d{2}/)?.[0] ?? ''`, so the built
+     app always shows that day's content no matter when it's opened.
    - Don't ask me to choose or approve the idea. Just pick the best one
      and go. Tell me what you chose in one sentence before building.
 
@@ -52,9 +59,10 @@ Build and ship a small web app today. Rules:
      app folder needs its own `.gitignore`.
 
 5. RECORD IT
-   - Write a README.md inside the day's app folder with: the date, the
-     app name, a one-sentence description, how to run it, and the live URL
-     (or "not deployed"). The folder name + this README is what stops you
+   - Write a README.md inside the day's app folder with: the app name, a
+     one-sentence description, how to run it, and the live URL (or "not
+     deployed"). Don't restate the date in the README — the folder name
+     already carries it. The folder name + this README is what stops you
      from repeating ideas.
 
 6. WRAP UP
