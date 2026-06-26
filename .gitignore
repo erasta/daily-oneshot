@@ -1,0 +1,6 @@
+# Dependencies for every app live in their own node_modules; never commit them.
+node_modules/
+
+# Build caches and local env files.
+*.local
+.DS_Store
