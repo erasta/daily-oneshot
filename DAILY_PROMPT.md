@@ -14,7 +14,8 @@ Build and ship a small web app today. Rules:
    - First list ./apps/ to see every app built so far (each folder is
      named YYYY-MM-DD-<slug>). Read an app's own README.md if you need
      more than the slug. Your idea must be meaningfully different from all
-     of them — different category, mechanic, and purpose. No near-dupes.
+     of them — different category, mechanic, purpose, and visual medium
+     (e.g. don't ship two plain-React/SVG apps in a row). No near-dupes.
    - Invent ONE app. It must be fully completable and deployable in a
      single session. Favor self-contained apps with no backend: if it
      needs "daily"/changing content, derive it deterministically from the
@@ -32,6 +33,18 @@ Build and ship a small web app today. Rules:
 
 2. CONSTRAINTS
    - Stack is always Vite + React + TypeScript. No exceptions.
+   - Lean on popular, well-loved client-side libraries to make the app look
+     and feel great — don't build everything from scratch in plain React.
+     Pick whatever best fits the idea, and vary the choice day to day so the
+     collection stays diverse. Some good ones (not a closed list):
+       - three.js (3D / WebGL), or react-three-fiber for a React-friendly API
+       - pixi.js (fast 2D / WebGL canvas), p5.js (creative coding)
+       - leaflet / maplibre-gl (interactive maps), d3 (data viz)
+       - matter.js / rapier (physics), tone.js / howler (audio)
+       - framer-motion / gsap (animation), pixi-filters, regl, etc.
+     Install them as normal npm deps. Keep it client-side only (no API keys,
+     no paid tiers); for maps use a free no-key tile source. Make sure every
+     added dep still passes the type-check / lint / build gates below.
    - Keep scope ruthlessly small: one screen, one core interaction,
      something genuinely fun or useful. Polish over feature count.
    - No accounts, no database, no paid services. localStorage is fine, but
