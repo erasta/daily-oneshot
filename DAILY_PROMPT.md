@@ -45,8 +45,25 @@ Build and ship a small web app today. Rules:
      Install them as normal npm deps. Keep it client-side only (no API keys,
      no paid tiers); for maps use a free no-key tile source. Make sure every
      added dep still passes the type-check / lint / build gates below.
+   - Make it INTERACTIVE, not just something to look at. The app must have
+     a core interaction the user drives — input, manipulation, a game,
+     a tool, a toy that responds to them — and that interaction should be
+     the point. A passive thing you only watch or rotate doesn't qualify;
+     the user should be doing something with a goal, response, or result.
    - Keep scope ruthlessly small: one screen, one core interaction,
      something genuinely fun or useful. Polish over feature count.
+   - MOBILE-FIRST: it must look and feel great on a phone. Design for a
+     small touch screen first, then scale up. That means:
+       - Works in portrait on a ~375px-wide viewport with no horizontal
+         scroll, no clipped UI, and no tiny tap targets (hit areas ≥44px).
+       - Touch is a first-class input: support tap / drag / swipe / pinch
+         as the interaction needs — don't rely on hover, right-click, or a
+         physical keyboard for anything essential.
+       - Respect safe areas and viewport units (use `100dvh`, not `100vh`);
+         avoid layouts that break when the on-screen keyboard or browser
+         chrome appears.
+       - Verify it responsively (e.g. resize / device-emulation) before
+         calling it done; it should still be fine on desktop.
    - No accounts, no database, no paid services. localStorage is fine, but
      all apps are served from one origin (the GitHub Pages domain), so they
      share one localStorage. Namespace every key with the full folder slug
