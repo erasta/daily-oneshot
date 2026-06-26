@@ -100,18 +100,43 @@
         }
       }
 
+      // When served from GitHub Pages (e.g. erasta.github.io/daily-oneshot/),
+      // work out the owner + repo so we can list apps/ via the GitHub API.
+      function githubRepo() {
+        const host = location.hostname.match(/^([^.]+)\.github\.io$/)
+        if (!host) return null
+        const repo = location.pathname.split('/').filter(Boolean)[0]
+        return repo ? { owner: host[1], repo } : null
+      }
+
+      // Get the list of app folder names. Tries, in order:
+      //  1. the GitHub contents API (works on GitHub Pages, no manifest file)
+      //  2. a directory-listing dev server such as `npx serve .` (local)
+      async function loadSlugs() {
+        const gh = githubRepo()
+        if (gh) {
+          const items = await asJson(
+            `https://api.github.com/repos/${gh.owner}/${gh.repo}/contents/apps`,
+          )
+          return items.filter((f) => f.type === 'dir').map((f) => f.name)
+        }
+        const listing = await asJson('apps/')
+        return listing.files
+          .filter((f) => f.type === 'folder')
+          .map((f) => f.name)
+      }
+
       async function main() {
-        let listing
+        let slugs
         try {
-          listing = await asJson('apps/')
+          slugs = (await loadSlugs()).filter((n) =>
+            /^\d{4}-\d{2}-\d{2}-/.test(n),
+          )
         } catch {
           grid.innerHTML =
-            '<p class="muted">Couldn\'t read the apps/ folder. Serve the repo root with <code>npx serve .</code> and open this page from there.</p>'
+            '<p class="muted">Couldn\'t list the apps. On GitHub Pages this loads via the GitHub API; locally, serve the repo root with <code>npx serve .</code> and open this page from there.</p>'
           return
         }
-        const slugs = listing.files
-          .filter((f) => f.type === 'folder' && /^\d{4}-\d{2}-\d{2}-/.test(f.name))
-          .map((f) => f.name)
 
         if (!slugs.length) {
           grid.innerHTML = '<p class="muted">No apps yet.</p>'
