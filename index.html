@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Daily Oneshot</title>
+    <style>
+      :root { color-scheme: dark; }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+        color: #e9ecf4;
+        background: radial-gradient(60% 60% at 50% 0%, #1c2030, #0c0d13 70%), #0c0d13;
+      }
+      .wrap { width: min(720px, 100%); margin: 0 auto; padding: clamp(2rem, 6vw, 4rem) 1.25rem; }
+      h1 {
+        margin: 0;
+        font-size: clamp(2rem, 7vw, 2.8rem);
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        background: linear-gradient(90deg, #ff5c7a, #ffd166, #4cc9f0);
+        -webkit-background-clip: text; background-clip: text; color: transparent;
+      }
+      .sub { margin: 0.4rem 0 2rem; color: #9aa1b4; }
+      .grid { display: grid; gap: 0.9rem; }
+      .card {
+        display: block; text-decoration: none; color: inherit;
+        padding: 1.1rem 1.25rem; border-radius: 14px;
+        background: #15171f; border: 1px solid rgba(255,255,255,0.06);
+        transition: transform 80ms ease, border-color 120ms ease;
+      }
+      .card:hover { transform: translateY(-2px); border-color: rgba(255,255,255,0.18); }
+      .date { font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; color: #8b92a6; }
+      .title { font-size: 1.15rem; font-weight: 700; margin: 0.15rem 0 0.25rem; }
+      .desc { color: #aab0c2; font-size: 0.92rem; line-height: 1.4; }
+      .muted { color: #8b92a6; }
+      code { background: #23262f; padding: 0.1rem 0.35rem; border-radius: 5px; }
+      footer { margin-top: 2.5rem; color: #5f6677; font-size: 0.78rem; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <h1>Daily Oneshot</h1>
+      <p class="sub">A new small app, built and shipped each day.</p>
+      <div class="grid" id="grid"><p class="muted">Loading…</p></div>
+      <footer id="footer"></footer>
+    </div>
+
+    <script>
+      // Lists every app by asking the static server for the contents of the
+      // apps/ folder as JSON (the `serve` package returns that when asked).
+      // For each app it reads the README to show a title and description.
+      const grid = document.getElementById('grid')
+      const footer = document.getElementById('footer')
+
+      const esc = (s) =>
+        s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+
+      const asJson = (path) =>
+        fetch(path, { headers: { Accept: 'application/json' } }).then((r) => {
+          if (!r.ok) throw new Error(r.status)
+          return r.json()
+        })
+
+      function parseReadme(text, slug) {
+        const lines = text.split('\n')
+        const heading = lines.find((l) => /^#\s+/.test(l))
+        const desc = lines.find(
+          (l) => l.trim() && !l.startsWith('#') && !l.trim().startsWith('**Date:'),
+        )
+        return {
+          title: heading ? heading.replace(/^#\s+/, '').trim() : slug.slice(11),
+          description: desc ? desc.trim() : '',
+        }
+      }
+
+      async function describe(slug) {
+        // Is it built? Check directly for the built dist/index.html.
+        let built = false
+        try {
+          built = (await fetch('apps/' + slug + '/dist/index.html')).ok
+        } catch {}
+        // Title + description from the README, if present.
+        let meta = { title: slug.slice(11), description: '' }
+        try {
+          const text = await fetch('apps/' + slug + '/README.md').then((r) =>
+            r.ok ? r.text() : '',
+          )
+          if (text) meta = parseReadme(text, slug)
+        } catch {}
+        return {
+          slug,
+          date: slug.slice(0, 10),
+          built,
+          href: built ? 'apps/' + slug + '/dist/' : 'apps/' + slug + '/',
+          title: meta.title,
+          description: meta.description,
+        }
+      }
+
+      async function main() {
+        let listing
+        try {
+          listing = await asJson('apps/')
+        } catch {
+          grid.innerHTML =
+            '<p class="muted">Couldn\'t read the apps/ folder. Serve the repo root with <code>npx serve .</code> and open this page from there.</p>'
+          return
+        }
+        const slugs = listing.files
+          .filter((f) => f.type === 'folder' && /^\d{4}-\d{2}-\d{2}-/.test(f.name))
+          .map((f) => f.name)
+
+        if (!slugs.length) {
+          grid.innerHTML = '<p class="muted">No apps yet.</p>'
+          return
+        }
+
+        const apps = (await Promise.all(slugs.map(describe))).sort((a, b) =>
+          a.date < b.date ? 1 : -1,
+        )
+
+        grid.innerHTML = apps
+          .map(
+            (a) => `
+            <a class="card" href="${a.href}">
+              <div class="date">${esc(a.date)}${a.built ? '' : ' · not built'}</div>
+              <div class="title">${esc(a.title)}</div>
+              <div class="desc">${esc(a.description)}</div>
+            </a>`,
+          )
+          .join('')
+        footer.textContent = apps.length + ' app' + (apps.length === 1 ? '' : 's')
+      }
+
+      main()
+    </script>
+  </body>
+</html>
