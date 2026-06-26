@@ -18,11 +18,9 @@ type Saved = {
   finishedMs: number | null // elapsed time when solved, or null if unsolved
 }
 
-const storageKey = 'daily-maze'
-
-function loadSaved(date: string): Saved {
+function loadSaved(key: string, date: string): Saved {
   try {
-    const raw = localStorage.getItem(storageKey)
+    const raw = localStorage.getItem(key)
     if (raw) {
       const parsed = JSON.parse(raw) as Saved
       if (parsed.date === date) return parsed
@@ -41,9 +39,12 @@ function formatTime(ms: number): string {
 }
 
 export default function App() {
-  // The date lives only in the folder name (.../YYYY-MM-DD-slug/); read it
-  // back from the URL so nothing here hardcodes a date.
-  const date = location.pathname.match(/\d{4}-\d{2}-\d{2}/)?.[0] ?? ''
+  // The folder name (.../YYYY-MM-DD-slug/) is the app's identity; read it back
+  // from the URL so nothing here is hardcoded. The full slug also namespaces
+  // localStorage, so apps sharing this origin can't clobber each other.
+  const slug =
+    location.pathname.match(/\d{4}-\d{2}-\d{2}-[^/]+/)?.[0] ?? 'daily-maze'
+  const date = slug.slice(0, 10)
   const maze: Maze = useMemo(
     () => generateMaze(GRID, GRID, seedFromDate(date)),
     [date],
@@ -51,7 +52,7 @@ export default function App() {
 
   const goal = useMemo(() => ({ x: GRID - 1, y: GRID - 1 }), [])
 
-  const [saved, setSaved] = useState<Saved>(() => loadSaved(date))
+  const [saved, setSaved] = useState<Saved>(() => loadSaved(slug, date))
   const [pos, setPos] = useState({ x: 0, y: 0 })
   const [trail, setTrail] = useState<Set<number>>(() => new Set([0]))
   const [startedAt, setStartedAt] = useState<number | null>(null)
@@ -60,8 +61,8 @@ export default function App() {
 
   // Persist progress whenever it changes.
   useEffect(() => {
-    localStorage.setItem(storageKey, JSON.stringify(saved))
-  }, [saved])
+    localStorage.setItem(slug, JSON.stringify(saved))
+  }, [slug, saved])
 
   // Tick the clock a few times a second while a run is in progress.
   useEffect(() => {

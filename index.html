@@ -143,8 +143,10 @@
           return
         }
 
+        // Newest first. Sort by the full slug (not just the date) so apps
+        // built on the same day keep a stable, predictable order.
         const apps = (await Promise.all(slugs.map(describe))).sort((a, b) =>
-          a.date < b.date ? 1 : -1,
+          a.slug < b.slug ? 1 : -1,
         )
 
         grid.innerHTML = apps

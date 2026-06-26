@@ -22,10 +22,11 @@ Build and ship a small web app today. Rules:
    - When an app's content depends on "today's date", the date must live
      ONLY in the app's folder name. Don't hardcode a date literal anywhere
      (no `const date = '2026-06-26'`) and don't read the system clock (no
-     `new Date()`). Instead derive the date at runtime from the folder name
-     in the URL path, e.g.
-     `location.pathname.match(/\d{4}-\d{2}-\d{2}/)?.[0] ?? ''`, so the built
-     app always shows that day's content no matter when it's opened.
+     `new Date()`). Instead derive the full slug at runtime from the folder
+     name in the URL path and take the date from it, e.g.
+     `const slug = location.pathname.match(/\d{4}-\d{2}-\d{2}-[^/]+/)?.[0] ?? '<this-app-slug>'`
+     then `const date = slug.slice(0, 10)`, so the built app always shows
+     that day's content no matter when it's opened.
    - Don't ask me to choose or approve the idea. Just pick the best one
      and go. Tell me what you chose in one sentence before building.
 
@@ -33,7 +34,11 @@ Build and ship a small web app today. Rules:
    - Stack is always Vite + React + TypeScript. No exceptions.
    - Keep scope ruthlessly small: one screen, one core interaction,
      something genuinely fun or useful. Polish over feature count.
-   - No accounts, no database, no paid services. localStorage is fine.
+   - No accounts, no database, no paid services. localStorage is fine, but
+     all apps are served from one origin (the GitHub Pages domain), so they
+     share one localStorage. Namespace every key with the full folder slug
+     (e.g. use the `slug` derived above as the key, or prefix keys with it)
+     so apps can't clobber each other's saved state.
 
 3. BUILD IT — ZERO ERRORS
    - Put each day's app in its own folder: ./apps/YYYY-MM-DD-<slug>/
