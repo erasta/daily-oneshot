@@ -1,0 +1,144 @@
+.app {
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right)
+    env(safe-area-inset-bottom) env(safe-area-inset-left);
+  gap: 8px;
+}
+
+.title {
+  margin: 10px 0 2px;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+.title span {
+  color: #46d987;
+}
+
+.game {
+  flex: 1;
+  width: 100%;
+  max-width: 460px;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  gap: 10px;
+  padding: 0 12px 10px;
+}
+
+.hud {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  background: #16201b;
+  border: 1px solid #243029;
+  border-radius: 14px;
+  padding: 8px 12px;
+}
+.hud-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+}
+.hud-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #7f9387;
+}
+.hud-value {
+  font-size: 17px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.stage {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  justify-content: center;
+}
+
+.board {
+  height: 100%;
+  max-width: 100%;
+  aspect-ratio: 300 / 440;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  touch-action: none;
+  display: block;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(6, 12, 9, 0.55);
+  border-radius: 16px;
+  backdrop-filter: blur(2px);
+}
+.card {
+  background: #16201b;
+  border: 1px solid #2c3a31;
+  border-radius: 18px;
+  padding: 22px 26px;
+  text-align: center;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+}
+.card-score {
+  font-size: 26px;
+  font-weight: 800;
+  color: #46d987;
+}
+.card-sub {
+  margin: 6px 0 16px;
+  color: #aebfb4;
+  font-size: 14px;
+}
+
+.btn {
+  appearance: none;
+  border: none;
+  background: #46d987;
+  color: #06120b;
+  font-weight: 700;
+  font-size: 16px;
+  padding: 12px 22px;
+  min-height: 44px;
+  border-radius: 12px;
+  cursor: pointer;
+}
+.btn:active {
+  transform: scale(0.97);
+}
+
+.foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 32px;
+  color: #94a89b;
+  font-size: 13px;
+}
+.btn-ghost {
+  appearance: none;
+  background: transparent;
+  border: 1px solid #36473c;
+  color: #cfe0d6;
+  font-size: 13px;
+  padding: 8px 14px;
+  min-height: 36px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.btn-ghost:active {
+  transform: scale(0.97);
+}
