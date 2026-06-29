@@ -1,0 +1,268 @@
+:root {
+  --bg: #0d1020;
+  --fg: #eef2ff;
+  --muted: #9aa6d6;
+  --accent: #2dd4bf;
+  --amber: #ffb454;
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  overflow: hidden;
+  overscroll-behavior: none;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+}
+
+.app {
+  position: fixed;
+  inset: 0;
+  height: 100dvh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+}
+
+.scene {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  touch-action: none;
+}
+
+.scene canvas {
+  display: block;
+}
+
+/* ---- Top HUD ---- */
+.hud-top {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: calc(env(safe-area-inset-top) + 14px) 16px 0;
+  pointer-events: none;
+}
+
+.title h1 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.6);
+}
+
+.title .date {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+.stats {
+  display: flex;
+  gap: 8px;
+}
+
+.stat {
+  min-width: 52px;
+  padding: 6px 10px;
+  border-radius: 12px;
+  background: rgba(20, 26, 53, 0.66);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(120, 140, 220, 0.18);
+  text-align: center;
+  line-height: 1.1;
+}
+
+.stat b {
+  font-size: 19px;
+  font-weight: 800;
+}
+
+.stat small {
+  display: block;
+  font-size: 10px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* ---- Controls ---- */
+.controls {
+  position: relative;
+  z-index: 2;
+  margin-top: auto;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 18px calc(env(safe-area-inset-bottom) + 18px);
+}
+
+.dpad {
+  position: relative;
+  width: 168px;
+  height: 168px;
+  flex: 0 0 auto;
+}
+
+.dpad-btn {
+  position: absolute;
+  width: 56px;
+  height: 56px;
+  display: grid;
+  place-items: center;
+  font-size: 22px;
+  color: var(--fg);
+  background: rgba(24, 31, 62, 0.72);
+  border: 1px solid rgba(130, 150, 230, 0.25);
+  border-radius: 16px;
+  backdrop-filter: blur(8px);
+  cursor: pointer;
+  transition: transform 0.06s ease, background 0.12s ease;
+}
+
+.dpad-btn:active {
+  transform: scale(0.92);
+  background: rgba(45, 212, 191, 0.28);
+}
+
+.dpad-btn.up {
+  top: 0;
+  left: 56px;
+}
+.dpad-btn.down {
+  bottom: 0;
+  left: 56px;
+}
+.dpad-btn.left {
+  left: 0;
+  top: 56px;
+}
+.dpad-btn.right {
+  right: 0;
+  top: 56px;
+}
+
+.side-btns {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: stretch;
+}
+
+.txt-btn {
+  min-width: 64px;
+  min-height: 44px;
+  padding: 0 16px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--fg);
+  background: rgba(24, 31, 62, 0.72);
+  border: 1px solid rgba(130, 150, 230, 0.25);
+  border-radius: 12px;
+  backdrop-filter: blur(8px);
+  cursor: pointer;
+}
+
+.txt-btn:active {
+  background: rgba(45, 212, 191, 0.28);
+}
+
+/* ---- Overlay cards ---- */
+.overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(6, 8, 18, 0.55);
+  backdrop-filter: blur(3px);
+}
+
+.card {
+  width: 100%;
+  max-width: 360px;
+  padding: 24px;
+  border-radius: 20px;
+  background: linear-gradient(180deg, rgba(28, 35, 70, 0.96), rgba(18, 23, 48, 0.96));
+  border: 1px solid rgba(130, 150, 230, 0.28);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  text-align: center;
+}
+
+.card h2 {
+  margin: 0 0 10px;
+  font-size: 26px;
+}
+
+.card p {
+  margin: 0 0 12px;
+  color: #d8def8;
+  line-height: 1.5;
+  font-size: 15px;
+}
+
+.card ul {
+  text-align: left;
+  margin: 0 0 16px;
+  padding-left: 20px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.card .primary {
+  width: 100%;
+  min-height: 48px;
+  font-size: 16px;
+  font-weight: 800;
+  color: #042a26;
+  background: var(--accent);
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+}
+
+.card .primary:active {
+  filter: brightness(0.92);
+}
+
+@media (max-width: 360px) {
+  .dpad {
+    width: 150px;
+    height: 150px;
+  }
+  .dpad-btn {
+    width: 50px;
+    height: 50px;
+  }
+  .dpad-btn.up,
+  .dpad-btn.down {
+    left: 50px;
+  }
+  .dpad-btn.left,
+  .dpad-btn.right {
+    top: 50px;
+  }
+}
